@@ -66,6 +66,7 @@ Route::middleware('auth:sanctum')->group(function () {
 
     // Admin Routes
     Route::middleware('role:Admin')->prefix('admin')->group(function () {
+        Route::get('dashboard', [\App\Http\Controllers\Api\Admin\DashboardController::class, 'index']);
         Route::apiResource('departments', \App\Http\Controllers\Api\Admin\DepartmentController::class)->except(['index', 'show']);
         Route::apiResource('categories', \App\Http\Controllers\Api\Admin\CategoryController::class)->except(['index', 'show']);
         Route::apiResource('statuses', \App\Http\Controllers\Api\Admin\StatusController::class)->except(['index', 'show']);
