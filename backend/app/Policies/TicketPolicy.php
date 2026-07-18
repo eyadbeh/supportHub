@@ -2,23 +2,9 @@
 
 namespace App\Policies;
 
+use App\Models\Ticket;
 use App\Models\User;
 
-/**
- * Authorization policy for Ticket operations.
- *
- * Full implementation deferred to Sprint 3 when the Ticket model exists.
- * Method stubs are defined here to establish the authorization contract.
- *
- * Authorization Matrix (from docs):
- *   view:         Owner ✅, Support (dept) ✅, Admin ✅
- *   reply:        Owner ✅, Support (dept) ✅, Admin ✅
- *   assign:       Support ✅, Admin ✅
- *   transfer:     Support ✅, Admin ✅
- *   updateStatus: Support ✅, Admin ✅
- *   close:        Support ✅, Admin ✅ (only when Resolved)
- *   reopen:       Owner ✅, Admin ✅ (only when Closed)
- */
 class TicketPolicy
 {
     /**
@@ -33,14 +19,37 @@ class TicketPolicy
         return null;
     }
 
-    // Method stubs — implemented in Sprint 3
-    // public function viewAny(User $user): bool {}
-    // public function view(User $user, Ticket $ticket): bool {}
-    // public function create(User $user): bool {}
-    // public function reply(User $user, Ticket $ticket): bool {}
-    // public function assign(User $user, Ticket $ticket): bool {}
-    // public function transfer(User $user, Ticket $ticket): bool {}
-    // public function updateStatus(User $user, Ticket $ticket): bool {}
-    // public function close(User $user, Ticket $ticket): bool {}
-    // public function reopen(User $user, Ticket $ticket): bool {}
+    public function viewAny(User $user): bool
+    {
+        return true;
+    }
+
+    public function view(User $user, Ticket $ticket): bool
+    {
+        if ($user->hasRole('Support')) {
+            return true;
+        }
+
+        return $user->id === $ticket->user_id;
+    }
+
+    public function create(User $user): bool
+    {
+        return true;
+    }
+
+    public function update(User $user, Ticket $ticket): bool
+    {
+        return $user->hasRole('Support');
+    }
+
+    public function delete(User $user, Ticket $ticket): bool
+    {
+        return false;
+    }
+
+    public function assign(User $user, Ticket $ticket): bool
+    {
+        return $user->hasRole('Support');
+    }
 }

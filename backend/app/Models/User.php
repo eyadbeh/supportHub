@@ -64,4 +64,20 @@ class User extends Authenticatable
     {
         return $this->belongsToMany(Department::class);
     }
+
+    /**
+     * Get the tickets created by this user.
+     */
+    public function tickets(): \Illuminate\Database\Eloquent\Relations\HasMany
+    {
+        return $this->hasMany(Ticket::class);
+    }
+
+    /**
+     * Get the replies created by this user.
+     */
+    public function replies(): \Illuminate\Database\Eloquent\Relations\HasMany
+    {
+        return $this->hasMany(Reply::class);
+    }
 }

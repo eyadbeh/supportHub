@@ -1,6 +1,9 @@
 <?php
 
 use App\Http\Controllers\Api\AuthController;
+use App\Http\Controllers\Api\TicketController;
+use App\Http\Controllers\Api\ReplyController;
+use App\Http\Controllers\Api\TicketActivityController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -42,8 +45,22 @@ Route::middleware('auth:sanctum')->group(function () {
 
     // Admin Routes
     Route::middleware('role:Admin')->prefix('admin')->group(function () {
-        Route::apiResource('departments', \App\Http\Controllers\Api\Admin\DepartmentController::class);
-        Route::apiResource('categories', \App\Http\Controllers\Api\Admin\CategoryController::class);
-        Route::apiResource('statuses', \App\Http\Controllers\Api\Admin\StatusController::class);
+        Route::apiResource('departments', \App\Http\Controllers\Api\Admin\DepartmentController::class)->except(['index', 'show']);
+        Route::apiResource('categories', \App\Http\Controllers\Api\Admin\CategoryController::class)->except(['index', 'show']);
+        Route::apiResource('statuses', \App\Http\Controllers\Api\Admin\StatusController::class)->except(['index', 'show']);
     });
+
+    // Public / Shared Lookups
+    Route::get('departments', [\App\Http\Controllers\Api\Admin\DepartmentController::class, 'index']);
+    Route::get('departments/{department}', [\App\Http\Controllers\Api\Admin\DepartmentController::class, 'show']);
+    Route::get('categories', [\App\Http\Controllers\Api\Admin\CategoryController::class, 'index']);
+    Route::get('categories/{category}', [\App\Http\Controllers\Api\Admin\CategoryController::class, 'show']);
+    Route::get('statuses', [\App\Http\Controllers\Api\Admin\StatusController::class, 'index']);
+    Route::get('statuses/{status}', [\App\Http\Controllers\Api\Admin\StatusController::class, 'show']);
+
+    // Ticket Routes
+    Route::apiResource('tickets', TicketController::class)->except(['destroy']);
+    Route::get('tickets/{ticket}/replies', [ReplyController::class, 'index']);
+    Route::post('tickets/{ticket}/replies', [ReplyController::class, 'store']);
+    Route::get('tickets/{ticket}/activities', [TicketActivityController::class, 'index']);
 });

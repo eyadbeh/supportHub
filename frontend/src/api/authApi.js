@@ -1,4 +1,4 @@
-import axiosInstance from './axios';
+import api from './axios';
 
 export const authApi = {
   /**
@@ -7,7 +7,7 @@ export const authApi = {
    * @returns {Promise<Object>} { user, token }
    */
   register: async (data) => {
-    const response = await axiosInstance.post('/auth/register', data);
+    const response = await api.post('/auth/register', data);
     return response.data;
   },
 
@@ -17,7 +17,7 @@ export const authApi = {
    * @returns {Promise<Object>} { user, token }
    */
   login: async (data) => {
-    const response = await axiosInstance.post('/auth/login', data);
+    const response = await api.post('/auth/login', data);
     return response.data;
   },
 
