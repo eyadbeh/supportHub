@@ -1,9 +1,10 @@
 import { useState, useEffect } from 'react';
 import { userApi } from '@/api/userApi';
 import { toast } from 'react-hot-toast';
-import { Loader2, Users, Shield, Headphones, User as UserIcon, Plus, Edit2 } from 'lucide-react';
+import { Loader2, Users, Shield, Headphones, User as UserIcon, Plus, Edit2, Ban, CheckCircle } from 'lucide-react';
 import CreateUserModal from '../components/CreateUserModal';
 import EditUserRoleModal from '../components/EditUserRoleModal';
+import { useSelector } from 'react-redux';
 
 const ROLE_CONFIG = {
   Admin: { icon: Shield, color: 'bg-purple-100 text-purple-700 dark:bg-purple-900/30 dark:text-purple-400' },
@@ -15,6 +16,7 @@ export default function AdminUsersPage() {
   const [users, setUsers] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
   const [filter, setFilter] = useState('all');
+  const { user: currentUser } = useSelector(state => state.auth);
   
   const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
   const [userToEdit, setUserToEdit] = useState(null);
@@ -59,6 +61,27 @@ export default function AdminUsersPage() {
     } catch (error) {
       toast.error('Failed to update role');
       throw error;
+    }
+  };
+
+  const handleToggleStatus = async (user) => {
+    if (user.id === currentUser.id) {
+      toast.error('You cannot disable your own account');
+      return;
+    }
+    
+    try {
+      if (user.deleted_at) {
+        await userApi.enable(user.id);
+        toast.success('User enabled successfully');
+      } else {
+        if (!window.confirm('Are you sure you want to disable this user? They will not be able to log in.')) return;
+        await userApi.disable(user.id);
+        toast.success('User disabled successfully');
+      }
+      fetchUsers();
+    } catch (error) {
+      toast.error(error.response?.data?.message || 'Failed to update user status');
     }
   };
 
@@ -156,16 +179,32 @@ export default function AdminUsersPage() {
                       </div>
                     )}
                   </div>
-                  <button
-                    onClick={() => setUserToEdit(user)}
-                    className="p-2 rounded-md hover:bg-slate-100 dark:hover:bg-slate-800 text-slate-500 hover:text-primary transition-colors"
-                    title="Edit Role & Departments"
-                  >
-                    <Edit2 className="w-4 h-4" />
-                  </button>
+                  <div className="flex flex-col gap-1">
+                    <button
+                      onClick={() => setUserToEdit(user)}
+                      className="p-2 rounded-md hover:bg-slate-100 dark:hover:bg-slate-800 text-slate-500 hover:text-primary transition-colors"
+                      title="Edit Role & Departments"
+                    >
+                      <Edit2 className="w-4 h-4" />
+                    </button>
+                    {user.id !== currentUser.id && (
+                      <button
+                        onClick={() => handleToggleStatus(user)}
+                        className={`p-2 rounded-md hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors ${
+                          user.deleted_at ? 'text-green-500 hover:text-green-600' : 'text-red-500 hover:text-red-600'
+                        }`}
+                        title={user.deleted_at ? 'Enable User' : 'Disable User'}
+                      >
+                        {user.deleted_at ? <CheckCircle className="w-4 h-4" /> : <Ban className="w-4 h-4" />}
+                      </button>
+                    )}
+                  </div>
                 </div>
-                <div className="mt-3 text-xs text-muted-foreground">
-                  Joined {new Date(user.created_at).toLocaleDateString()}
+                <div className="mt-3 flex items-center justify-between text-xs text-muted-foreground">
+                  <span>Joined {new Date(user.created_at).toLocaleDateString()}</span>
+                  {user.deleted_at && (
+                    <span className="text-red-500 font-medium">Disabled</span>
+                  )}
                 </div>
               </div>
             );

@@ -29,6 +29,13 @@ class LoginUserAction
      */
     public function execute(array $data): User
     {
+        $trashedUser = User::onlyTrashed()->where('email', $data['email'])->first();
+        if ($trashedUser) {
+            throw ValidationException::withMessages([
+                'email' => ['Your account has been disabled. Please contact the administrator.'],
+            ]);
+        }
+
         if (! Auth::attempt(['email' => $data['email'], 'password' => $data['password']])) {
             throw ValidationException::withMessages([
                 'email' => ['The provided credentials are incorrect.'],

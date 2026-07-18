@@ -15,7 +15,8 @@ class UserController extends Controller
 {
     public function index(): JsonResponse
     {
-        $users = User::with('roles', 'departments')
+        $users = User::withTrashed()
+            ->with('roles', 'departments')
             ->latest()
             ->get();
 
@@ -88,6 +89,46 @@ class UserController extends Controller
             'success' => true,
             'message' => 'User role updated successfully.',
             'data' => new UserResource($user),
+        ]);
+    }
+
+    public function destroy($id): JsonResponse
+    {
+        $user = User::withTrashed()->findOrFail($id);
+        
+        if ($user->id === auth()->id()) {
+            return response()->json([
+                'success' => false,
+                'message' => 'You cannot disable yourself.',
+            ], 403);
+        }
+
+        $user->delete();
+
+        activity()
+            ->performedOn($user)
+            ->event('deleted')
+            ->log("Admin disabled user {$user->name}");
+
+        return response()->json([
+            'success' => true,
+            'message' => 'User disabled successfully.',
+        ]);
+    }
+
+    public function restore($id): JsonResponse
+    {
+        $user = User::withTrashed()->findOrFail($id);
+        $user->restore();
+
+        activity()
+            ->performedOn($user)
+            ->event('restored')
+            ->log("Admin enabled user {$user->name}");
+
+        return response()->json([
+            'success' => true,
+            'message' => 'User enabled successfully.',
         ]);
     }
 }

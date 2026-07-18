@@ -70,6 +70,8 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::get('users', [\App\Http\Controllers\Api\Admin\UserController::class, 'index']);
         Route::post('users', [\App\Http\Controllers\Api\Admin\UserController::class, 'store']);
         Route::put('users/{user}/role', [\App\Http\Controllers\Api\Admin\UserController::class, 'updateRole']);
+        Route::delete('users/{id}', [\App\Http\Controllers\Api\Admin\UserController::class, 'destroy']);
+        Route::post('users/{id}/restore', [\App\Http\Controllers\Api\Admin\UserController::class, 'restore']);
         Route::apiResource('departments', \App\Http\Controllers\Api\Admin\DepartmentController::class)->except(['index', 'show']);
         Route::apiResource('categories', \App\Http\Controllers\Api\Admin\CategoryController::class)->except(['index', 'show']);
         Route::apiResource('statuses', \App\Http\Controllers\Api\Admin\StatusController::class)->except(['index', 'show']);

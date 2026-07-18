@@ -13,4 +13,12 @@ export const userApi = {
     const response = await api.put(`/admin/users/${id}/role`, data);
     return response.data;
   },
+  disable: async (id) => {
+    const response = await api.delete(`/admin/users/${id}`);
+    return response.data;
+  },
+  enable: async (id) => {
+    const response = await api.post(`/admin/users/${id}/restore`);
+    return response.data;
+  },
 };

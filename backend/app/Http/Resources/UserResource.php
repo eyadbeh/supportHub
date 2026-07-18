@@ -32,6 +32,7 @@ class UserResource extends JsonResource
                 'name' => $d->name,
             ])),
             'created_at' => $this->created_at,
+            'deleted_at' => $this->deleted_at,
         ];
     }
 }
