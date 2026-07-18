@@ -39,4 +39,11 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::post('/logout', [AuthController::class, 'logout']);
         Route::get('/me', [AuthController::class, 'me']);
     });
+
+    // Admin Routes
+    Route::middleware('role:Admin')->prefix('admin')->group(function () {
+        Route::apiResource('departments', \App\Http\Controllers\Api\Admin\DepartmentController::class);
+        Route::apiResource('categories', \App\Http\Controllers\Api\Admin\CategoryController::class);
+        Route::apiResource('statuses', \App\Http\Controllers\Api\Admin\StatusController::class);
+    });
 });

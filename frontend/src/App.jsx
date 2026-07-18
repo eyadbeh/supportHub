@@ -3,9 +3,16 @@ import { Routes, Route, Navigate } from "react-router-dom";
 import GuestLayout from "@/layouts/GuestLayout";
 import GuestRoute from "@/routes/GuestRoute";
 import ProtectedRoute from "@/routes/ProtectedRoute";
+import RoleRoute from "@/routes/RoleRoute";
+import AdminLayout from "@/layouts/AdminLayout";
 
 import LoginPage from "@/features/auth/pages/LoginPage";
 import RegisterPage from "@/features/auth/pages/RegisterPage";
+
+import AdminDashboardPage from "@/features/admin/pages/AdminDashboardPage";
+import DepartmentsPage from "@/features/admin/pages/DepartmentsPage";
+import CategoriesPage from "@/features/admin/pages/CategoriesPage";
+import StatusesPage from "@/features/admin/pages/StatusesPage";
 
 /**
  * Root application component.
@@ -55,6 +62,16 @@ function App() {
             </div>
           }
         />
+        
+        {/* Admin Routes */}
+        <Route element={<RoleRoute allowedRoles={['Admin']} />}>
+          <Route path="/admin" element={<AdminLayout />}>
+            <Route index element={<AdminDashboardPage />} />
+            <Route path="departments" element={<DepartmentsPage />} />
+            <Route path="categories" element={<CategoriesPage />} />
+            <Route path="statuses" element={<StatusesPage />} />
+          </Route>
+        </Route>
       </Route>
     </Routes>
   );
