@@ -10,7 +10,6 @@ use App\Http\Requests\Auth\RegisterRequest;
 use App\Http\Resources\UserResource;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
-
 use Illuminate\Support\Facades\Auth;
 
 /**
@@ -30,7 +29,7 @@ class AuthController extends Controller
     public function register(RegisterRequest $request, RegisterUserAction $action): JsonResponse
     {
         $user = $action->execute($request->validated());
-        
+
         Auth::login($user);
 
         return $this->success([

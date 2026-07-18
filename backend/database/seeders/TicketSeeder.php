@@ -2,13 +2,11 @@
 
 namespace Database\Seeders;
 
-use App\Models\Category;
 use App\Models\Department;
 use App\Models\Reply;
 use App\Models\Status;
 use App\Models\Ticket;
 use App\Models\User;
-use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 
 class TicketSeeder extends Seeder
@@ -20,12 +18,13 @@ class TicketSeeder extends Seeder
     {
         $users = User::role('User')->get();
         $agents = User::role('Support')->get();
-        
+
         $departments = Department::with('categories')->get();
         $statuses = Status::all();
 
         if ($users->isEmpty() || $agents->isEmpty() || $departments->isEmpty() || $statuses->isEmpty()) {
             $this->command->warn('Necessary related data is missing. Skipping Ticket Seeder.');
+
             return;
         }
 

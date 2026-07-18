@@ -3,6 +3,8 @@
 namespace Database\Factories;
 
 use App\Models\Reply;
+use App\Models\Ticket;
+use App\Models\User;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 /**
@@ -18,8 +20,8 @@ class ReplyFactory extends Factory
     public function definition(): array
     {
         return [
-            'ticket_id' => \App\Models\Ticket::inRandomOrder()->first()->id ?? 1,
-            'user_id' => \App\Models\User::inRandomOrder()->first()->id ?? 1,
+            'ticket_id' => Ticket::inRandomOrder()->first()->id ?? 1,
+            'user_id' => User::inRandomOrder()->first()->id ?? 1,
             'message' => $this->faker->paragraph(2),
         ];
     }

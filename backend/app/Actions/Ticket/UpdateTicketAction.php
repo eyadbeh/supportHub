@@ -2,10 +2,11 @@
 
 namespace App\Actions\Ticket;
 
-use App\Models\Ticket;
-use App\Models\Status;
 use App\Events\StatusChanged;
 use App\Events\TicketAssigned;
+use App\Models\Status;
+use App\Models\Ticket;
+use App\Models\User;
 use Illuminate\Support\Facades\DB;
 
 class UpdateTicketAction
@@ -32,7 +33,7 @@ class UpdateTicketAction
 
                 activity()
                     ->performedOn($ticket)
-                    ->causedBy(\App\Models\User::find($userId))
+                    ->causedBy(User::find($userId))
                     ->event('status_changed')
                     ->log("Status changed to {$newStatus->name}");
 
@@ -40,10 +41,10 @@ class UpdateTicketAction
             }
 
             if (array_key_exists('assigned_to', $data) && $data['assigned_to'] != $oldAssignedTo) {
-                $logMessage = $data['assigned_to'] ? "Ticket assigned" : "Ticket unassigned";
+                $logMessage = $data['assigned_to'] ? 'Ticket assigned' : 'Ticket unassigned';
                 activity()
                     ->performedOn($ticket)
-                    ->causedBy(\App\Models\User::find($userId))
+                    ->causedBy(User::find($userId))
                     ->event('assigned')
                     ->log($logMessage);
 

@@ -4,8 +4,9 @@ namespace App\Actions\Ticket;
 
 use App\Models\Status;
 use App\Models\Ticket;
-use Illuminate\Support\Str;
+use App\Models\User;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Str;
 
 class CreateTicketAction
 {
@@ -13,11 +14,11 @@ class CreateTicketAction
     {
         return DB::transaction(function () use ($data, $userId) {
             // Generate unique ticket number: SUP-XXXXXX
-            $data['ticket_number'] = 'SUP-' . strtoupper(Str::random(6));
+            $data['ticket_number'] = 'SUP-'.strtoupper(Str::random(6));
             $data['user_id'] = $userId;
 
             // Default to the "Open" status or lowest sort order status if not provided
-            if (!isset($data['status_id'])) {
+            if (! isset($data['status_id'])) {
                 $defaultStatus = Status::orderBy('sort_order')->first();
                 $data['status_id'] = $defaultStatus->id;
             }
@@ -26,7 +27,7 @@ class CreateTicketAction
 
             activity()
                 ->performedOn($ticket)
-                ->causedBy(\App\Models\User::find($userId))
+                ->causedBy(User::find($userId))
                 ->event('created')
                 ->log('Ticket created');
 

@@ -2,7 +2,11 @@
 
 namespace Database\Factories;
 
+use App\Models\Category;
+use App\Models\Department;
+use App\Models\Status;
 use App\Models\Ticket;
+use App\Models\User;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 /**
@@ -18,11 +22,11 @@ class TicketFactory extends Factory
     public function definition(): array
     {
         return [
-            'ticket_number' => 'SUP-' . strtoupper($this->faker->unique()->bothify('?????###')),
-            'user_id' => \App\Models\User::factory(),
-            'department_id' => \App\Models\Department::inRandomOrder()->first()->id ?? 1,
-            'category_id' => \App\Models\Category::inRandomOrder()->first()->id ?? 1,
-            'status_id' => \App\Models\Status::inRandomOrder()->first()->id ?? 1,
+            'ticket_number' => 'SUP-'.strtoupper($this->faker->unique()->bothify('?????###')),
+            'user_id' => User::factory(),
+            'department_id' => Department::inRandomOrder()->first()->id ?? 1,
+            'category_id' => Category::inRandomOrder()->first()->id ?? 1,
+            'status_id' => Status::inRandomOrder()->first()->id ?? 1,
             'assigned_to' => null,
             'priority' => $this->faker->randomElement(['Low', 'Medium', 'High', 'Critical']),
             'title' => $this->faker->sentence(),

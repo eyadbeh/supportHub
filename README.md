@@ -1,154 +1,129 @@
-# SupportHub
+# SupportHub 🚀
 
-> A modern Helpdesk & Ticket Management System built with Laravel and React.
+SupportHub is a robust, production-ready Help Desk and Ticket Management system built with **Laravel 11** and **React (Vite)**. It provides a secure, role-based platform for users to submit support requests, support agents to resolve them, and administrators to oversee the entire system.
 
-## Tech Stack
+## 📸 Screenshots
 
-### Backend
-- PHP 8.4 / Laravel 13
-- Laravel Sanctum (Token Authentication)
-- Spatie Permission (Role-Based Access Control)
-- Spatie Activity Log (Audit Trail)
-- MySQL 8.4
+### Admin Dashboard & Configurations
 
-### Frontend
-- React 19 / Vite
-- Redux Toolkit (State Management)
-- React Router DOM (Routing)
-- Tailwind CSS v4 + shadcn/ui (UI)
-- React Hook Form + Zod (Forms & Validation)
-- Axios (HTTP Client)
+![Admin Dashboard](screenshots/1.png)
+![Admin Overview](screenshots/2.png)
+![Admin Users](screenshots/3.png)
+![Admin Settings](screenshots/4.png)
 
----
+### Authentication
 
-## Getting Started
+![Login Page](screenshots/5.png)
 
-### Prerequisites
+### Agent Workspace (Support)
 
-- PHP 8.3+
-- Composer
-- Node.js 18+
-- MySQL 8+
-- Docker & Docker Compose (optional)
+![Support Tickets](screenshots/6.png)
+![Support Ticket Details](screenshots/7.png)
+
+### User Portal
+
+![User Dashboard](screenshots/8.png)
+![Profile Page](screenshots/9.png)
 
 ---
 
-### Option 1: Local Development
+## 🌟 Key Features
 
-#### Backend Setup
-
-```bash
-cd backend
-
-# Install PHP dependencies
-composer install
-
-# Configure environment
-cp .env.example .env
-php artisan key:generate
-
-# Create database (MySQL)
-mysql -u root -e "CREATE DATABASE IF NOT EXISTS supporthub CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;"
-
-# Run migrations
-php artisan migrate
-
-# Start the API server
-php artisan serve
-```
-
-The API will be available at `http://localhost:8000/api`.
-
-#### Frontend Setup
-
-```bash
-cd frontend
-
-# Install Node dependencies
-npm install
-
-# Start the development server
-npm run dev
-```
-
-The frontend will be available at `http://localhost:5173`.
+- **Role-Based Access Control (RBAC):** Granular permissions for Users, Support Agents, and Administrators using `spatie/laravel-permission`.
+- **Tenant/Department Isolation:** Support agents can be dynamically assigned to specific departments and only see tickets relevant to their expertise. Users can only ever see their own tickets.
+- **Ticket Lifecycle Management:** Create, assign, transfer, and resolve tickets with strict status transition rules.
+- **Real-time Activity Logging:** Every business action (role changes, ticket assignments, status updates) is securely tracked using `spatie/laravel-activitylog` and displayed in the Admin Dashboard.
+- **Soft Deletes & Security:** Administrators can soft-delete user accounts to disable logins without destroying historical ticket data.
+- **Dark Mode UI:** A gorgeous, fully responsive React interface built with Tailwind CSS and `shadcn/ui` components that respects system light/dark mode preferences.
+- **Database Notifications:** Users and Agents receive built-in notifications when tickets are replied to or updated.
 
 ---
 
-### Option 2: Docker
+## 🛠️ Tech Stack
 
-```bash
-# From the project root
-docker compose up -d
+### Backend (API)
 
-# Run migrations inside the container
-docker compose exec backend php artisan migrate
-```
+- **Framework:** Laravel 11 (PHP 8.2+)
+- **Database:** MySQL 8.4
+- **Authentication:** Laravel Sanctum (Stateful SPA Cookies)
+- **Permissions:** Spatie Laravel Permission
+- **Auditing:** Spatie Activity Log
 
-- **API:** http://localhost:8000
-- **Frontend:** http://localhost:5173
-- **MySQL:** localhost:3307 (user: supporthub / password: secret)
+### Frontend (SPA)
 
----
-
-## Project Structure
-
-```
-supportHub/
-├── backend/          # Laravel REST API
-│   ├── app/
-│   │   ├── Actions/      # Business logic (one action = one use case)
-│   │   ├── Events/       # Domain events
-│   │   ├── Http/
-│   │   │   ├── Controllers/
-│   │   │   ├── Requests/   # Form validation
-│   │   │   └── Resources/  # API response transformation
-│   │   ├── Listeners/     # Event handlers
-│   │   ├── Models/
-│   │   ├── Notifications/
-│   │   ├── Policies/      # Authorization
-│   │   ├── Services/      # Reusable shared logic
-│   │   └── Traits/
-│   ├── database/
-│   ├── routes/
-│   └── tests/
-├── frontend/         # React SPA
-│   └── src/
-│       ├── api/          # Axios HTTP modules
-│       ├── components/   # Shared reusable components
-│       ├── constants/    # App-wide constants
-│       ├── features/     # Feature-based modules
-│       ├── hooks/        # Custom React hooks
-│       ├── layouts/      # Page layouts
-│       ├── lib/          # Utilities (cn, etc.)
-│       ├── routes/       # Route guards
-│       └── store/        # Redux store
-├── docker/           # Docker configuration
-└── AI/               # Project documentation
-```
+- **Framework:** React 18 + Vite
+- **State Management:** Redux Toolkit
+- **Routing:** React Router v6
+- **Styling:** Tailwind CSS + shadcn/ui
+- **API Client:** Axios
+- **Forms:** React Hook Form + Zod validation
+- **Charts:** Recharts
 
 ---
 
-## API Health Check
+## ⚙️ Local Setup Guide
 
-```bash
-curl http://localhost:8000/api/health
-```
+You can run SupportHub locally using either **Laragon** (native Windows) or **Docker** (isolated containers).
 
-```json
-{
-  "success": true,
-  "message": "SupportHub API is running.",
-  "data": {
-    "version": "1.0.0",
-    "environment": "local"
-  }
-}
-```
+### Option 1: Docker (Recommended)
+
+Docker will instantly spin up Nginx, PHP-FPM, MySQL, and the React frontend in isolated containers.
+
+1. Install [Docker Desktop](https://docs.docker.com/desktop/).
+2. Clone the repository and navigate to the project root.
+3. Start the containers:
+    ```bash
+    docker compose up -d --build
+    ```
+4. Run the database migrations and seeders inside the backend container:
+    ```bash
+    docker compose exec backend php artisan migrate:fresh --seed
+    ```
+5. Access the application:
+    - **Frontend:** `http://localhost:5173`
+    - **Backend API:** `http://localhost:8000/api`
+
+### Option 2: Laragon / Local Server
+
+1. Clone the repository into your `www` folder.
+2. Setup the **Backend**:
+    ```bash
+    cd backend
+    composer install
+    cp .env.example .env
+    php artisan key:generate
+    php artisan storage:link
+    ```
+3. Update your `.env` database credentials and run migrations:
+    ```bash
+    php artisan migrate:fresh --seed
+    ```
+4. Setup the **Frontend**:
+    ```bash
+    cd ../frontend
+    npm install
+    npm run dev
+    ```
 
 ---
 
-## Running Tests
+## 🔑 Default Demo Accounts
+
+If you ran the seeders (`php artisan db:seed`), you can log in with the following accounts:
+
+- **Admin:** `admin@example.com` / `password`
+- **Support Agent:** `support@example.com` / `password`
+- **Standard User:** `user@example.com` / `password`
+
+---
+
+## 📚 API Documentation
+
+A full API reference is available in the [API_DOCUMENTATION.md](API_DOCUMENTATION.md) file.
+
+## 🧪 Testing
+
+The backend includes automated feature tests to verify core security and business logic. To run the test suite:
 
 ```bash
 cd backend
@@ -156,22 +131,3 @@ php artisan test
 ```
 
 ---
-
-## Architecture Decisions
-
-| Decision | Reason |
-|----------|--------|
-| Sanctum | Official Laravel auth, simple token management |
-| Spatie Permission | Industry-standard RBAC |
-| Actions Pattern | Thin controllers, single responsibility |
-| Policies | Centralized authorization |
-| API Resources | Stable API contract, no model leakage |
-| Events/Listeners | Loose coupling for notifications & logging |
-| Redux Toolkit | Predictable global auth state |
-| shadcn/ui | Accessible, customizable, no vendor lock-in |
-
----
-
-## License
-
-MIT

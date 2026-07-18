@@ -2,12 +2,10 @@
 
 namespace App\Notifications;
 
+use App\Models\Reply;
 use Illuminate\Bus\Queueable;
-use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Notifications\Messages\MailMessage;
 use Illuminate\Notifications\Notification;
-
-use App\Models\Reply;
 
 class TicketRepliedNotification extends Notification
 {
@@ -54,7 +52,7 @@ class TicketRepliedNotification extends Notification
         return [
             'ticket_id' => $this->reply->ticket_id,
             'message' => "New reply on ticket {$this->reply->ticket->ticket_number} from {$this->reply->user->name}",
-            'type' => 'reply'
+            'type' => 'reply',
         ];
     }
 }

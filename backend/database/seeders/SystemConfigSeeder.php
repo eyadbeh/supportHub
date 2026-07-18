@@ -5,7 +5,6 @@ namespace Database\Seeders;
 use App\Models\Category;
 use App\Models\Department;
 use App\Models\Status;
-use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Str;
 
@@ -20,7 +19,7 @@ class SystemConfigSeeder extends Seeder
         $departments = [
             'IT Support' => ['Hardware', 'Software', 'Network', 'Access Request'],
             'HR' => ['Payroll', 'Benefits', 'Onboarding'],
-            'Finance' => ['Expenses', 'Invoicing', 'Procurement']
+            'Finance' => ['Expenses', 'Invoicing', 'Procurement'],
         ];
 
         foreach ($departments as $deptName => $categories) {

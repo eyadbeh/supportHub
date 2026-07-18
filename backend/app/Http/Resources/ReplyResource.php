@@ -14,7 +14,7 @@ class ReplyResource extends JsonResource
             'ticket_id' => $this->ticket_id,
             'message' => $this->message,
             'created_at' => $this->created_at,
-            
+
             // Relationships
             'user' => new UserResource($this->whenLoaded('user')),
         ];

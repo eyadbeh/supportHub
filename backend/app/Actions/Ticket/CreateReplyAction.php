@@ -2,9 +2,10 @@
 
 namespace App\Actions\Ticket;
 
+use App\Events\ReplyAdded;
 use App\Models\Reply;
 use App\Models\Ticket;
-use App\Events\ReplyAdded;
+use App\Models\User;
 use Illuminate\Support\Facades\DB;
 
 class CreateReplyAction
@@ -19,7 +20,7 @@ class CreateReplyAction
 
             activity()
                 ->performedOn($ticket)
-                ->causedBy(\App\Models\User::find($userId))
+                ->causedBy(User::find($userId))
                 ->event('reply_added')
                 ->log('Reply added to ticket');
 

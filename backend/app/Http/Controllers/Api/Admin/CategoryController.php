@@ -2,14 +2,14 @@
 
 namespace App\Http\Controllers\Api\Admin;
 
+use App\Actions\Admin\CreateCategoryAction;
+use App\Actions\Admin\DeleteCategoryAction;
+use App\Actions\Admin\UpdateCategoryAction;
 use App\Http\Controllers\Controller;
-use App\Models\Category;
-use App\Http\Resources\CategoryResource;
 use App\Http\Requests\Admin\StoreCategoryRequest;
 use App\Http\Requests\Admin\UpdateCategoryRequest;
-use App\Actions\Admin\CreateCategoryAction;
-use App\Actions\Admin\UpdateCategoryAction;
-use App\Actions\Admin\DeleteCategoryAction;
+use App\Http\Resources\CategoryResource;
+use App\Models\Category;
 use Illuminate\Http\JsonResponse;
 
 class CategoryController extends Controller
@@ -18,6 +18,7 @@ class CategoryController extends Controller
     {
         $this->authorize('viewAny', Category::class);
         $categories = Category::with('department')->get();
+
         return response()->json(CategoryResource::collection($categories));
     }
 
@@ -25,6 +26,7 @@ class CategoryController extends Controller
     {
         $this->authorize('view', $category);
         $category->load('department');
+
         return response()->json(new CategoryResource($category));
     }
 
@@ -32,6 +34,7 @@ class CategoryController extends Controller
     {
         $category = $action->execute($request->validated());
         $category->load('department');
+
         return response()->json(new CategoryResource($category), 201);
     }
 
@@ -39,6 +42,7 @@ class CategoryController extends Controller
     {
         $category = $action->execute($category, $request->validated());
         $category->load('department');
+
         return response()->json(new CategoryResource($category));
     }
 
@@ -46,6 +50,7 @@ class CategoryController extends Controller
     {
         $this->authorize('delete', $category);
         $action->execute($category);
+
         return response()->json(null, 204);
     }
 }

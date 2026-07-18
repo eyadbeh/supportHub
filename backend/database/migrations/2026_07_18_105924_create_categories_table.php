@@ -19,7 +19,7 @@ return new class extends Migration
             $table->boolean('is_active')->default(true);
             $table->timestamps();
             $table->softDeletes();
-            
+
             // Optional: A category name should be unique within a department
             $table->unique(['department_id', 'name']);
         });

@@ -6,6 +6,7 @@ use App\Actions\Ticket\CreateReplyAction;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Ticket\StoreReplyRequest;
 use App\Http\Resources\ReplyResource;
+use App\Models\Reply;
 use App\Models\Ticket;
 use Illuminate\Http\JsonResponse;
 
@@ -22,7 +23,7 @@ class ReplyController extends Controller
 
     public function store(StoreReplyRequest $request, Ticket $ticket, CreateReplyAction $action): JsonResponse
     {
-        $this->authorize('create', [\App\Models\Reply::class, $ticket]);
+        $this->authorize('create', [Reply::class, $ticket]);
 
         $reply = $action->execute($ticket, $request->validated(), $request->user()->id);
 

@@ -1,30 +1,41 @@
 <?php
 
+use App\Actions\Ticket\CreateReplyAction;
+use App\Actions\Ticket\CreateTicketAction;
+use App\Actions\Ticket\UpdateTicketAction;
+use App\Http\Controllers\Api\Admin\CategoryController;
+use App\Http\Controllers\Api\Admin\DashboardController;
+use App\Http\Controllers\Api\Admin\DepartmentController;
+use App\Http\Controllers\Api\Admin\StatusController;
+use App\Http\Controllers\Api\Admin\UserController;
 use App\Http\Controllers\Api\AuthController;
-use App\Http\Controllers\Api\TicketController;
+use App\Http\Controllers\Api\NotificationController;
+use App\Http\Controllers\Api\ProfileController;
 use App\Http\Controllers\Api\ReplyController;
 use App\Http\Controllers\Api\TicketActivityController;
+use App\Http\Controllers\Api\TicketController;
+use App\Models\User;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/test-notifs', function () {
-    $user = \App\Models\User::where('email', 'user@supporthub.test')->first();
-    $support = \App\Models\User::where('email', 'support@supporthub.test')->first();
+    $user = User::where('email', 'user@supporthub.test')->first();
+    $support = User::where('email', 'support@supporthub.test')->first();
 
-    $ticket = app(\App\Actions\Ticket\CreateTicketAction::class)->execute([
+    $ticket = app(CreateTicketAction::class)->execute([
         'title' => 'Tinker Test Ticket',
         'description' => 'Just testing notifications.',
         'department_id' => 1,
         'category_id' => 1,
-        'priority' => 'High'
+        'priority' => 'High',
     ], $user->id);
 
     echo "Ticket created: {$ticket->ticket_number}\n";
 
-    app(\App\Actions\Ticket\UpdateTicketAction::class)->execute($ticket, ['assigned_to' => $support->id], $user->id);
-    echo "Support notifications: " . $support->notifications()->count() . "\n";
+    app(UpdateTicketAction::class)->execute($ticket, ['assigned_to' => $support->id], $user->id);
+    echo 'Support notifications: '.$support->notifications()->count()."\n";
 
-    app(\App\Actions\Ticket\CreateReplyAction::class)->execute($ticket, ['message' => 'Hello from support'], $support->id);
-    echo "User notifications: " . $user->notifications()->count() . "\n";
+    app(CreateReplyAction::class)->execute($ticket, ['message' => 'Hello from support'], $support->id);
+    echo 'User notifications: '.$user->notifications()->count()."\n";
 });
 
 /*
@@ -66,33 +77,33 @@ Route::middleware('auth:sanctum')->group(function () {
 
     // Admin Routes
     Route::middleware('role:Admin')->prefix('admin')->group(function () {
-        Route::get('dashboard', [\App\Http\Controllers\Api\Admin\DashboardController::class, 'index']);
-        Route::get('users', [\App\Http\Controllers\Api\Admin\UserController::class, 'index']);
-        Route::post('users', [\App\Http\Controllers\Api\Admin\UserController::class, 'store']);
-        Route::put('users/{user}/role', [\App\Http\Controllers\Api\Admin\UserController::class, 'updateRole']);
-        Route::delete('users/{id}', [\App\Http\Controllers\Api\Admin\UserController::class, 'destroy']);
-        Route::post('users/{id}/restore', [\App\Http\Controllers\Api\Admin\UserController::class, 'restore']);
-        Route::apiResource('departments', \App\Http\Controllers\Api\Admin\DepartmentController::class)->except(['index', 'show']);
-        Route::apiResource('categories', \App\Http\Controllers\Api\Admin\CategoryController::class)->except(['index', 'show']);
-        Route::apiResource('statuses', \App\Http\Controllers\Api\Admin\StatusController::class)->except(['index', 'show']);
+        Route::get('dashboard', [DashboardController::class, 'index']);
+        Route::get('users', [UserController::class, 'index']);
+        Route::post('users', [UserController::class, 'store']);
+        Route::put('users/{user}/role', [UserController::class, 'updateRole']);
+        Route::delete('users/{id}', [UserController::class, 'destroy']);
+        Route::post('users/{id}/restore', [UserController::class, 'restore']);
+        Route::apiResource('departments', DepartmentController::class)->except(['index', 'show']);
+        Route::apiResource('categories', CategoryController::class)->except(['index', 'show']);
+        Route::apiResource('statuses', StatusController::class)->except(['index', 'show']);
     });
 
     // Public / Shared Lookups
-    Route::get('departments', [\App\Http\Controllers\Api\Admin\DepartmentController::class, 'index']);
-    Route::get('departments/{department}', [\App\Http\Controllers\Api\Admin\DepartmentController::class, 'show']);
-    Route::get('categories', [\App\Http\Controllers\Api\Admin\CategoryController::class, 'index']);
-    Route::get('categories/{category}', [\App\Http\Controllers\Api\Admin\CategoryController::class, 'show']);
-    Route::get('statuses', [\App\Http\Controllers\Api\Admin\StatusController::class, 'index']);
-    Route::get('statuses/{status}', [\App\Http\Controllers\Api\Admin\StatusController::class, 'show']);
+    Route::get('departments', [DepartmentController::class, 'index']);
+    Route::get('departments/{department}', [DepartmentController::class, 'show']);
+    Route::get('categories', [CategoryController::class, 'index']);
+    Route::get('categories/{category}', [CategoryController::class, 'show']);
+    Route::get('statuses', [StatusController::class, 'index']);
+    Route::get('statuses/{status}', [StatusController::class, 'show']);
 
     // Profile Routes
-    Route::get('profile', [\App\Http\Controllers\Api\ProfileController::class, 'show']);
-    Route::post('profile', [\App\Http\Controllers\Api\ProfileController::class, 'update']);
+    Route::get('profile', [ProfileController::class, 'show']);
+    Route::post('profile', [ProfileController::class, 'update']);
 
     // Notification Routes
-    Route::get('notifications', [\App\Http\Controllers\Api\NotificationController::class, 'index']);
-    Route::patch('notifications/read-all', [\App\Http\Controllers\Api\NotificationController::class, 'markAllAsRead']);
-    Route::patch('notifications/{id}/read', [\App\Http\Controllers\Api\NotificationController::class, 'markAsRead']);
+    Route::get('notifications', [NotificationController::class, 'index']);
+    Route::patch('notifications/read-all', [NotificationController::class, 'markAllAsRead']);
+    Route::patch('notifications/{id}/read', [NotificationController::class, 'markAsRead']);
 
     // Ticket Routes
     Route::apiResource('tickets', TicketController::class)->except(['destroy']);

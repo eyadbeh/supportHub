@@ -4,6 +4,8 @@ namespace App\Models;
 
 use Database\Factories\UserFactory;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
@@ -60,7 +62,7 @@ class User extends Authenticatable
     /**
      * Get the departments this user belongs to.
      */
-    public function departments(): \Illuminate\Database\Eloquent\Relations\BelongsToMany
+    public function departments(): BelongsToMany
     {
         return $this->belongsToMany(Department::class);
     }
@@ -68,7 +70,7 @@ class User extends Authenticatable
     /**
      * Get the tickets created by this user.
      */
-    public function tickets(): \Illuminate\Database\Eloquent\Relations\HasMany
+    public function tickets(): HasMany
     {
         return $this->hasMany(Ticket::class);
     }
@@ -76,7 +78,7 @@ class User extends Authenticatable
     /**
      * Get the replies created by this user.
      */
-    public function replies(): \Illuminate\Database\Eloquent\Relations\HasMany
+    public function replies(): HasMany
     {
         return $this->hasMany(Reply::class);
     }

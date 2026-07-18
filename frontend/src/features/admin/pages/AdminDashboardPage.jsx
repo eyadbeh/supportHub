@@ -130,7 +130,7 @@ export default function AdminDashboardPage() {
         </div>
       </div>
 
-      <div className="grid gap-4 md:grid-cols-2">
+      <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
         <div className="rounded-xl border bg-card text-card-foreground shadow-sm">
           <div className="p-6 pb-2">
             <h3 className="font-semibold">Recent Tickets</h3>
@@ -165,6 +165,26 @@ export default function AdminDashboardPage() {
                     <p className="text-sm text-muted-foreground">on {reply.ticket.ticket_number} by {reply.user.name}</p>
                   </div>
                   <div className="text-sm">{new Date(reply.created_at).toLocaleDateString()}</div>
+                </div>
+              ))}
+            </div>
+          </div>
+        </div>
+
+        <div className="rounded-xl border bg-card text-card-foreground shadow-sm">
+          <div className="p-6 pb-2">
+            <h3 className="font-semibold">Recent Activity</h3>
+          </div>
+          <div className="p-6 pt-0">
+            <div className="space-y-4">
+              {recent.logs?.length === 0 && <p className="text-sm text-slate-500">No recent activity.</p>}
+              {recent.logs?.map(log => (
+                <div key={log.id} className="flex flex-col space-y-1">
+                  <p className="text-sm font-medium leading-none truncate">{log.description}</p>
+                  <div className="flex justify-between items-center text-xs text-muted-foreground">
+                    <span>{log.causer?.name || 'System'}</span>
+                    <span>{new Date(log.created_at).toLocaleString()}</span>
+                  </div>
                 </div>
               ))}
             </div>

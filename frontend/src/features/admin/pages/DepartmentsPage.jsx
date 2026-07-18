@@ -38,7 +38,7 @@ export default function DepartmentsPage() {
     try {
       setIsLoading(true);
       const data = await departmentApi.getAll();
-      console.log('Fetched departments:', data);
+
       setDepartments(data);
     } catch (error) {
       console.error('Fetch departments error:', error, error.response?.data);

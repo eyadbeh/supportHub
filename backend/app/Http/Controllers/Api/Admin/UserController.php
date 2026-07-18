@@ -3,13 +3,13 @@
 namespace App\Http\Controllers\Api\Admin;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\StoreUserRequest;
+use App\Http\Requests\UpdateUserRoleRequest;
 use App\Http\Resources\UserResource;
 use App\Models\User;
 use Illuminate\Http\JsonResponse;
-use App\Http\Requests\StoreUserRequest;
-use App\Http\Requests\UpdateUserRoleRequest;
-use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Hash;
 
 class UserController extends Controller
 {
@@ -39,7 +39,7 @@ class UserController extends Controller
 
             $user->assignRole($validated['role']);
 
-            if ($validated['role'] === 'Support' && !empty($validated['departments'])) {
+            if ($validated['role'] === 'Support' && ! empty($validated['departments'])) {
                 $user->departments()->sync($validated['departments']);
             }
 
@@ -70,7 +70,7 @@ class UserController extends Controller
             $user->syncRoles([$validated['role']]);
 
             // Sync departments based on the new role
-            if ($validated['role'] === 'Support' && !empty($validated['departments'])) {
+            if ($validated['role'] === 'Support' && ! empty($validated['departments'])) {
                 $user->departments()->sync($validated['departments']);
             } else {
                 // If they are no longer Support (or no departments provided), clear their departments
@@ -95,7 +95,7 @@ class UserController extends Controller
     public function destroy($id): JsonResponse
     {
         $user = User::withTrashed()->findOrFail($id);
-        
+
         if ($user->id === auth()->id()) {
             return response()->json([
                 'success' => false,

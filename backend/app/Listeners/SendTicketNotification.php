@@ -2,20 +2,15 @@
 
 namespace App\Listeners;
 
-use Illuminate\Contracts\Queue\ShouldQueue;
-use Illuminate\Queue\InteractsWithQueue;
-
 use App\Events\ReplyAdded;
 use App\Events\StatusChanged;
 use App\Events\TicketAssigned;
+use App\Notifications\TicketAssignedNotification;
 use App\Notifications\TicketRepliedNotification;
 use App\Notifications\TicketStatusChangedNotification;
-use App\Notifications\TicketAssignedNotification;
-use Illuminate\Events\Dispatcher;
 
 class SendTicketNotification
 {
-
     public function handleReplyAdded(ReplyAdded $event): void
     {
         $reply = $event->reply;

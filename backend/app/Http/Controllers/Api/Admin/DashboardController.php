@@ -3,11 +3,11 @@
 namespace App\Http\Controllers\Api\Admin;
 
 use App\Http\Controllers\Controller;
-use Illuminate\Http\JsonResponse;
-use App\Models\Ticket;
 use App\Models\Reply;
-use Spatie\Activitylog\Models\Activity;
+use App\Models\Ticket;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Facades\DB;
+use Spatie\Activitylog\Models\Activity;
 
 class DashboardController extends Controller
 {
@@ -68,8 +68,8 @@ class DashboardController extends Controller
                     'tickets' => $recentTickets,
                     'replies' => $recentReplies,
                     'logs' => $recentLogs,
-                ]
-            ]
+                ],
+            ],
         ]);
     }
 }

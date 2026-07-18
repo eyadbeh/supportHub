@@ -2,12 +2,9 @@
 
 namespace App\Notifications;
 
-use Illuminate\Bus\Queueable;
-use Illuminate\Contracts\Queue\ShouldQueue;
-use Illuminate\Notifications\Messages\MailMessage;
-use Illuminate\Notifications\Notification;
-
 use App\Models\Ticket;
+use Illuminate\Bus\Queueable;
+use Illuminate\Notifications\Notification;
 
 class TicketAssignedNotification extends Notification
 {
@@ -43,7 +40,7 @@ class TicketAssignedNotification extends Notification
         return [
             'ticket_id' => $this->ticket->id,
             'message' => "You have been assigned to ticket {$this->ticket->ticket_number}",
-            'type' => 'assignment'
+            'type' => 'assignment',
         ];
     }
 }
