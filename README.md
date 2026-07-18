@@ -94,11 +94,21 @@ Docker will instantly spin up Nginx, PHP-FPM, MySQL, and the React frontend in i
     php artisan key:generate
     php artisan storage:link
     ```
-3. Update your `.env` database credentials and run migrations:
+3. **Create a MySQL database** named `supporthub` (via phpMyAdmin, HeidiSQL, or the command line):
+    ```sql
+    CREATE DATABASE supporthub;
+    ```
+4. Update your `.env` file with the correct database credentials:
+    ```env
+    DB_DATABASE=supporthub
+    DB_USERNAME=root
+    DB_PASSWORD=
+    ```
+5. Run the migrations and seeders to initialize the database with tables and demo data:
     ```bash
     php artisan migrate:fresh --seed
     ```
-4. Setup the **Frontend**:
+6. Setup the **Frontend**:
     ```bash
     cd ../frontend
     npm install
