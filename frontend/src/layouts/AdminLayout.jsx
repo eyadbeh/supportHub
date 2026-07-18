@@ -4,6 +4,7 @@ import { authApi } from '@/api/authApi';
 import { logout } from '@/store/authSlice';
 import { cn } from '@/lib/utils';
 import { Building2, Tags, Activity, LayoutDashboard, LogOut } from 'lucide-react';
+import NotificationBell from '@/components/NotificationBell';
 
 export default function AdminLayout() {
   const dispatch = useDispatch();
@@ -82,7 +83,8 @@ export default function AdminLayout() {
           <h2 className="text-lg font-semibold text-slate-900 dark:text-white">
             Administration
           </h2>
-          <div>
+          <div className="flex items-center space-x-4">
+            <NotificationBell />
             <span className="text-sm text-slate-500">Welcome back, {user?.name}</span>
           </div>
         </header>

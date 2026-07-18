@@ -4,6 +4,7 @@ import { authApi } from '@/api/authApi';
 import { logout } from '@/store/authSlice';
 import { cn } from '@/lib/utils';
 import { LayoutDashboard, Ticket, LogOut, Shield } from 'lucide-react';
+import NotificationBell from '@/components/NotificationBell';
 
 export default function UserLayout() {
   const dispatch = useDispatch();
@@ -71,7 +72,8 @@ export default function UserLayout() {
                 )}
               </div>
             </div>
-            <div className="flex items-center">
+            <div className="flex items-center space-x-4">
+              <NotificationBell />
               <span className="text-sm text-slate-500 dark:text-slate-400 mr-4">
                 {user?.name}
               </span>

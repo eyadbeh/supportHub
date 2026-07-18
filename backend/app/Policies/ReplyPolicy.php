@@ -8,15 +8,6 @@ use App\Models\User;
 
 class ReplyPolicy
 {
-    public function before(User $user, string $ability): ?bool
-    {
-        if ($user->hasRole('Admin')) {
-            return true;
-        }
-
-        return null;
-    }
-
     public function viewAny(User $user): bool
     {
         return true;
@@ -29,6 +20,10 @@ class ReplyPolicy
 
     public function create(User $user, Ticket $ticket): bool
     {
+        if ($ticket->status && $ticket->status->is_closed) {
+            return false;
+        }
+
         return $user->can('view', $ticket);
     }
 
