@@ -21,7 +21,7 @@ export default function LoginPage() {
   const location = useLocation();
   const dispatch = useDispatch();
 
-  const from = location.state?.from?.pathname || '/dashboard';
+  const from = location.state?.from?.pathname || '/tickets';
 
   const {
     register,
@@ -43,11 +43,24 @@ export default function LoginPage() {
       dispatch(
         setCredentials({
           user: response.data.user,
-          token: response.data.token,
         })
       );
       toast.success(response.message || 'Login successful!');
-      navigate(from, { replace: true });
+      
+      const roles = response.data.user.roles || [];
+      const isAdmin = roles.includes('Admin');
+      const isSupport = roles.includes('Support');
+      
+      // If there's a specific 'from' location, honor it. 
+      if (location.state?.from?.pathname) {
+        navigate(location.state.from.pathname, { replace: true });
+      } else if (isAdmin) {
+        navigate('/admin', { replace: true });
+      } else if (isSupport) {
+        navigate('/tickets', { replace: true });
+      } else {
+        navigate('/tickets', { replace: true });
+      }
     } catch (error) {
       if (error.response?.status === 422) {
         const validationErrors = error.response.data.errors;

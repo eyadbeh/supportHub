@@ -3,6 +3,7 @@
 namespace App\Actions\Auth;
 
 use App\Models\User;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Validation\ValidationException;
 
@@ -26,24 +27,15 @@ class LoginUserAction
      *
      * @throws ValidationException
      */
-    public function execute(array $data): array
+    public function execute(array $data): User
     {
-        $user = User::where('email', $data['email'])->first();
-
-        if (! $user || ! Hash::check($data['password'], $user->password)) {
+        if (! Auth::attempt(['email' => $data['email'], 'password' => $data['password']])) {
             throw ValidationException::withMessages([
                 'email' => ['The provided credentials are incorrect.'],
             ]);
         }
 
-        // Revoke existing tokens for this device to prevent token accumulation
-        $user->tokens()->delete();
-
-        $token = $user->createToken('auth-token')->plainTextToken;
-
-        return [
-            'user' => $user,
-            'token' => $token,
-        ];
+        // Return the authenticated user
+        return Auth::user();
     }
 }

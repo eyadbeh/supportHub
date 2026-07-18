@@ -18,14 +18,14 @@ export default function TicketDetailsPage() {
   const [isReplying, setIsReplying] = useState(false);
   const [isUpdatingStatus, setIsUpdatingStatus] = useState(false);
 
-  const hasAdminRole = user?.roles?.some(r => r.name === 'Admin' || r.name === 'Support');
+  const hasAgentRole = user?.roles?.includes('Admin') || user?.roles?.includes('Support');
 
   useEffect(() => {
     fetchTicket();
-    if (hasAdminRole) {
+    if (hasAgentRole) {
       fetchStatuses();
     }
-  }, [id, hasAdminRole]);
+  }, [id, hasAgentRole]);
 
   const fetchTicket = async () => {
     try {
@@ -215,10 +215,10 @@ export default function TicketDetailsPage() {
             )}
           </dl>
 
-          {/* Admin Actions */}
-          {hasAdminRole && (
+          {/* Agent Actions */}
+          {hasAgentRole && (
             <div className="mt-8 pt-6 border-t dark:border-gray-700 space-y-4">
-              <h4 className="font-medium text-gray-900 dark:text-white">Admin Actions</h4>
+              <h4 className="font-medium text-gray-900 dark:text-white">Agent Actions</h4>
               
               <div>
                 <label className="block text-xs font-medium text-gray-500 dark:text-gray-400 mb-1">Change Status</label>

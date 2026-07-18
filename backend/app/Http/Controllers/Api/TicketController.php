@@ -20,11 +20,20 @@ class TicketController extends Controller
 
         $query = Ticket::with(['user', 'department', 'category', 'status', 'assignee']);
 
-        if (!$request->user()->hasRole('Admin|Support')) {
-            $query->where('user_id', $request->user()->id);
+        $user = $request->user();
+
+        if ($user->hasRole('Admin')) {
+            // Admin sees all tickets
+        } elseif ($user->hasRole('Support')) {
+            // Support sees only tickets from their assigned departments
+            $departmentIds = $user->departments()->pluck('departments.id');
+            $query->whereIn('department_id', $departmentIds);
+        } else {
+            // Regular user sees only own tickets
+            $query->where('user_id', $user->id);
         }
 
-        // Simple filtering example
+        // Filtering
         if ($request->has('status_id')) {
             $query->where('status_id', $request->status_id);
         }

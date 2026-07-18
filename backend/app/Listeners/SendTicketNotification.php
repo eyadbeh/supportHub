@@ -15,12 +15,6 @@ use Illuminate\Events\Dispatcher;
 
 class SendTicketNotification
 {
-    public function subscribe(Dispatcher $events): void
-    {
-        $events->listen(ReplyAdded::class, [$this, 'handleReplyAdded']);
-        $events->listen(StatusChanged::class, [$this, 'handleStatusChanged']);
-        $events->listen(TicketAssigned::class, [$this, 'handleTicketAssigned']);
-    }
 
     public function handleReplyAdded(ReplyAdded $event): void
     {

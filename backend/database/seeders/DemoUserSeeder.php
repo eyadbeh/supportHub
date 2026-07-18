@@ -3,6 +3,7 @@
 namespace Database\Seeders;
 
 use App\Models\User;
+use App\Models\Department;
 use Illuminate\Database\Seeder;
 
 /**
@@ -39,6 +40,10 @@ class DemoUserSeeder extends Seeder
             ]
         );
         $support->assignRole('Support');
+
+        // Assign support user to departments (first 3)
+        $departmentIds = Department::take(3)->pluck('id');
+        $support->departments()->syncWithoutDetaching($departmentIds);
 
         // Standard user
         $user = User::firstOrCreate(

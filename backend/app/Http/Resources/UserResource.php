@@ -24,9 +24,13 @@ class UserResource extends JsonResource
             'id' => $this->id,
             'name' => $this->name,
             'email' => $this->email,
-            'avatar' => $this->avatar,
+            'avatar' => $this->avatar ? asset('storage/' . $this->avatar) : null,
             'roles' => $this->getRoleNames(),
             'permissions' => $this->getAllPermissions()->pluck('name'),
+            'departments' => $this->whenLoaded('departments', fn () => $this->departments->map(fn ($d) => [
+                'id' => $d->id,
+                'name' => $d->name,
+            ])),
             'created_at' => $this->created_at,
         ];
     }

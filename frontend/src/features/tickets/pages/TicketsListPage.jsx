@@ -1,11 +1,14 @@
 import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
+import { useSelector } from 'react-redux';
 import { ticketApi } from '../../../api/ticketApi';
 import { toast } from 'react-hot-toast';
 
 export default function TicketsListPage() {
   const [tickets, setTickets] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
+  const { user } = useSelector((state) => state.auth);
+  const hasSupportRole = user?.roles?.includes('Support');
 
   useEffect(() => {
     fetchTickets();
@@ -28,9 +31,11 @@ export default function TicketsListPage() {
     <div className="space-y-6">
       <div className="flex items-center justify-between">
         <h1 className="text-2xl font-bold text-gray-900 dark:text-white">Tickets</h1>
-        <Link to="/tickets/new" className="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 transition-colors">
-          Create Ticket
-        </Link>
+        {!hasSupportRole && (
+          <Link to="/tickets/new" className="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 transition-colors">
+            Create Ticket
+          </Link>
+        )}
       </div>
 
       <div className="bg-white dark:bg-gray-800 shadow rounded-lg overflow-hidden">

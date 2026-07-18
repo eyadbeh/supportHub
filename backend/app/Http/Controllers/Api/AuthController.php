@@ -11,56 +11,55 @@ use App\Http\Resources\UserResource;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 
+use Illuminate\Support\Facades\Auth;
+
 /**
  * Handles authentication endpoints.
  *
  * Endpoints:
  *   POST /auth/register — create a new user account
- *   POST /auth/login    — authenticate and receive a token
- *   POST /auth/logout   — revoke the current token
+ *   POST /auth/login    — authenticate via session
+ *   POST /auth/logout   — destroy the session
  *   GET  /auth/me       — get the authenticated user
  */
 class AuthController extends Controller
 {
     /**
      * Register a new user.
-     *
-     * Flow: Validate → Create User → Assign Role → Generate Token → Return 201
      */
     public function register(RegisterRequest $request, RegisterUserAction $action): JsonResponse
     {
         $user = $action->execute($request->validated());
-        $token = $user->createToken('auth-token')->plainTextToken;
+        
+        Auth::login($user);
 
         return $this->success([
             'user' => new UserResource($user),
-            'token' => $token,
         ], 'Registration successful.', 201);
     }
 
     /**
-     * Authenticate a user and return a token.
-     *
-     * Flow: Validate → Verify Credentials → Generate Token → Return User + Token
+     * Authenticate a user via session.
      */
     public function login(LoginRequest $request, LoginUserAction $action): JsonResponse
     {
-        $result = $action->execute($request->validated());
+        $user = $action->execute($request->validated());
+        $request->session()->regenerate();
 
         return $this->success([
-            'user' => new UserResource($result['user']),
-            'token' => $result['token'],
+            'user' => new UserResource($user),
         ], 'Login successful.');
     }
 
     /**
-     * Logout the authenticated user.
-     *
-     * Revokes the current access token.
+     * Logout the authenticated user and destroy session.
      */
     public function logout(Request $request): JsonResponse
     {
-        $request->user()->currentAccessToken()->delete();
+        Auth::guard('web')->logout();
+
+        $request->session()->invalidate();
+        $request->session()->regenerateToken();
 
         return $this->success(null, 'Logged out successfully.');
     }

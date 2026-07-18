@@ -4,10 +4,10 @@ import { useDispatch, useSelector } from 'react-redux';
 import { authApi } from '@/api/authApi';
 import { logout } from '@/store/authSlice';
 import { cn } from '@/lib/utils';
-import { Building2, Tags, Activity, LayoutDashboard, LogOut, Ticket, Users, User as UserIcon, Menu, X } from 'lucide-react';
+import { Ticket, LogOut, User as UserIcon, Menu, X } from 'lucide-react';
 import NotificationBell from '@/components/NotificationBell';
 
-export default function AdminLayout() {
+export default function SupportLayout() {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const { user } = useSelector((state) => state.auth);
@@ -24,17 +24,13 @@ export default function AdminLayout() {
   };
 
   const navItems = [
-    { name: 'Dashboard', path: '/admin', icon: LayoutDashboard },
-    { name: 'Tickets', path: '/admin/tickets', icon: Ticket },
-    { name: 'Users', path: '/admin/users', icon: Users },
-    { name: 'Departments', path: '/admin/departments', icon: Building2 },
-    { name: 'Categories', path: '/admin/categories', icon: Tags },
-    { name: 'Statuses', path: '/admin/statuses', icon: Activity },
-    { name: 'Profile', path: '/admin/profile', icon: UserIcon },
+    { name: 'Department Tickets', path: '/support', icon: Ticket },
+    { name: 'Profile', path: '/support/profile', icon: UserIcon },
   ];
 
   return (
     <div className="flex h-screen bg-slate-100 dark:bg-slate-900 overflow-hidden">
+      
       {/* Mobile Sidebar Overlay */}
       {isMobileMenuOpen && (
         <div 
@@ -49,7 +45,7 @@ export default function AdminLayout() {
         isMobileMenuOpen ? "translate-x-0" : "-translate-x-full"
       )}>
         <div className="flex h-16 items-center justify-between px-6 border-b">
-          <h1 className="text-xl font-bold tracking-tight">SupportHub <span className="text-primary text-sm font-normal">Admin</span></h1>
+          <h1 className="text-xl font-bold tracking-tight">SupportHub <span className="text-blue-600 dark:text-blue-400 text-sm font-normal">Agent</span></h1>
           <button 
             className="lg:hidden text-slate-500 hover:text-slate-900 dark:text-slate-400 dark:hover:text-white"
             onClick={() => setIsMobileMenuOpen(false)}
@@ -63,13 +59,13 @@ export default function AdminLayout() {
             <NavLink
               key={item.path}
               to={item.path}
-              end={item.path === '/admin'}
+              end={item.path === '/support'}
               onClick={() => setIsMobileMenuOpen(false)}
               className={({ isActive }) =>
                 cn(
                   "flex items-center gap-3 rounded-md px-3 py-2 text-sm font-medium transition-colors",
                   isActive 
-                    ? "bg-primary/10 text-primary" 
+                    ? "bg-blue-50 text-blue-700 dark:bg-blue-900/30 dark:text-blue-400" 
                     : "text-slate-600 hover:bg-slate-100 hover:text-slate-900 dark:text-slate-400 dark:hover:bg-slate-800 dark:hover:text-slate-50"
                 )
               }
@@ -90,7 +86,7 @@ export default function AdminLayout() {
               )}
             </div>
             <div className="flex-1 min-w-0">
-              <p className="truncate text-sm font-medium">{user?.name}</p>
+              <p className="truncate text-sm font-medium text-slate-900 dark:text-white">{user?.name}</p>
               <p className="truncate text-xs text-slate-500">{user?.email}</p>
             </div>
           </div>
@@ -115,12 +111,12 @@ export default function AdminLayout() {
               <Menu className="h-6 w-6" />
             </button>
             <h2 className="text-lg font-semibold text-slate-900 dark:text-white hidden sm:block">
-              Administration
+              Agent Workspace
             </h2>
           </div>
           <div className="flex items-center space-x-4">
             <NotificationBell />
-            <span className="text-sm text-slate-500 hidden sm:block">Welcome back, {user?.name.split(' ')[0]}</span>
+            <span className="text-sm text-slate-500 hidden sm:block">Ready to help, {user?.name.split(' ')[0]}</span>
           </div>
         </header>
         <div className="flex-1 overflow-auto p-4 sm:p-6">

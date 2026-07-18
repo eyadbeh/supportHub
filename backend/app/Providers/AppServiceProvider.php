@@ -29,7 +29,6 @@ class AppServiceProvider extends ServiceProvider
             return $user->hasRole('Admin') ? true : null;
         });
 
-        Event::subscribe(\App\Listeners\SendTicketNotification::class);
 
         $this->configureDefaults();
     }

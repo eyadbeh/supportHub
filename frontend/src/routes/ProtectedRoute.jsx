@@ -1,41 +1,44 @@
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { Navigate, Outlet, useLocation } from 'react-router-dom';
 import { useSelector, useDispatch } from 'react-redux';
 import { authApi } from '@/api/authApi';
 import { setUser, logout } from '@/store/authSlice';
 
 export default function ProtectedRoute() {
-  const { token, user } = useSelector((state) => state.auth);
+  const { authenticated, user } = useSelector((state) => state.auth);
   const dispatch = useDispatch();
   const location = useLocation();
+  const [isCheckingAuth, setIsCheckingAuth] = useState(true);
 
   useEffect(() => {
-    const fetchUser = async () => {
-      if (token && !user) {
-        try {
-          const { data } = await authApi.getMe();
-          dispatch(setUser(data));
-        } catch (error) {
-          // If token is invalid/expired, logout
-          dispatch(logout());
-        }
+    const checkAuth = async () => {
+      try {
+        const { data } = await authApi.getMe();
+        dispatch(setUser(data));
+      } catch (error) {
+        dispatch(logout());
+      } finally {
+        setIsCheckingAuth(false);
       }
     };
 
-    fetchUser();
-  }, [token, user, dispatch]);
+    if (!user) {
+      checkAuth();
+    } else {
+      setIsCheckingAuth(false);
+    }
+  }, [user, dispatch]);
 
-  if (!token) {
-    return <Navigate to="/login" state={{ from: location }} replace />;
-  }
-
-  // Optionally, show a loading spinner while fetching user
-  if (!user) {
+  if (isCheckingAuth) {
     return (
-      <div className="flex h-screen items-center justify-center bg-slate-950">
-        <div className="text-white">Loading...</div>
+      <div className="flex h-screen items-center justify-center bg-slate-50 dark:bg-slate-950">
+        <div className="text-slate-900 dark:text-white">Loading...</div>
       </div>
     );
+  }
+
+  if (!authenticated) {
+    return <Navigate to="/login" state={{ from: location }} replace />;
   }
 
   return <Outlet />;

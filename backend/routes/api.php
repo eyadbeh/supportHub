@@ -67,6 +67,9 @@ Route::middleware('auth:sanctum')->group(function () {
     // Admin Routes
     Route::middleware('role:Admin')->prefix('admin')->group(function () {
         Route::get('dashboard', [\App\Http\Controllers\Api\Admin\DashboardController::class, 'index']);
+        Route::get('users', [\App\Http\Controllers\Api\Admin\UserController::class, 'index']);
+        Route::post('users', [\App\Http\Controllers\Api\Admin\UserController::class, 'store']);
+        Route::put('users/{user}/role', [\App\Http\Controllers\Api\Admin\UserController::class, 'updateRole']);
         Route::apiResource('departments', \App\Http\Controllers\Api\Admin\DepartmentController::class)->except(['index', 'show']);
         Route::apiResource('categories', \App\Http\Controllers\Api\Admin\CategoryController::class)->except(['index', 'show']);
         Route::apiResource('statuses', \App\Http\Controllers\Api\Admin\StatusController::class)->except(['index', 'show']);
@@ -82,6 +85,7 @@ Route::middleware('auth:sanctum')->group(function () {
 
     // Profile Routes
     Route::get('profile', [\App\Http\Controllers\Api\ProfileController::class, 'show']);
+    Route::post('profile', [\App\Http\Controllers\Api\ProfileController::class, 'update']);
 
     // Notification Routes
     Route::get('notifications', [\App\Http\Controllers\Api\NotificationController::class, 'index']);
