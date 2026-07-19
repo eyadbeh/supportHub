@@ -142,7 +142,7 @@ export default function AdminDashboardPage() {
                 <div key={ticket.id} className="flex items-center justify-between">
                   <div className="space-y-1">
                     <p className="text-sm font-medium leading-none">{ticket.title}</p>
-                    <p className="text-sm text-muted-foreground">{ticket.ticket_number} - {ticket.user.name}</p>
+                    <p className="text-sm text-muted-foreground">{ticket.ticket_number} - {ticket.user?.name || 'Deleted User'}</p>
                   </div>
                   <div className="text-sm">{new Date(ticket.created_at).toLocaleDateString()}</div>
                 </div>
@@ -162,7 +162,7 @@ export default function AdminDashboardPage() {
                 <div key={reply.id} className="flex items-center justify-between">
                   <div className="space-y-1">
                     <p className="text-sm font-medium leading-none truncate max-w-[200px]">{reply.message}</p>
-                    <p className="text-sm text-muted-foreground">on {reply.ticket.ticket_number} by {reply.user.name}</p>
+                    <p className="text-sm text-muted-foreground">on {reply.ticket?.ticket_number || 'Unknown Ticket'} by {reply.user?.name || 'Deleted User'}</p>
                   </div>
                   <div className="text-sm">{new Date(reply.created_at).toLocaleDateString()}</div>
                 </div>
