@@ -141,3 +141,7 @@ php artisan test
 ```
 
 ---
+
+> [!NOTE]
+> **Git Workflow Note for Reviewers:**
+> For the sake of simplicity and speed during this take-home assessment, all commits were made directly to the `main` branch. In a real-world team environment, I would strictly adhere to proper Git workflows (e.g., Git Flow, feature branches, Pull Requests, and code reviews) to ensure safe collaboration and code quality.
